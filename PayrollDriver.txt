@@ -1,0 +1,55 @@
+package com.example.ethan.payroll;
+
+import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+
+import java.text.DecimalFormat;
+
+public class PayrollDriver extends AppCompatActivity {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_payroll_driver);
+        Button calculate = (Button) this.findViewById(R.id.calculate_btn);
+        calculate.setOnClickListener(new Button.OnClickListener(){
+
+            @Override
+            public void onClick(View v) {
+                EditText InputemployName = (EditText) findViewById(R.id.employ_name);
+                EditText InputweekHours = (EditText) findViewById(R.id.hours_week);
+                EditText InputratePay = (EditText) findViewById(R.id.hours_pay);
+                EditText InputrateFed = (EditText) findViewById(R.id.tax_federal);
+                EditText InputrateState = (EditText) findViewById(R.id.tax_state);
+                TextView result = (TextView) findViewById(R.id.result);
+
+                String name = InputemployName.getText().toString();
+                double hours = Double.parseDouble(InputweekHours.getText().toString());
+                double pay = Double.parseDouble(InputratePay.getText().toString());
+                double federal = Double.parseDouble(InputrateFed.getText().toString());
+                double state = Double.parseDouble(InputrateState.getText().toString());
+                double totalBefore = (hours * pay);
+                double taxFederal = (totalBefore * (federal / 100));
+                double taxState = (totalBefore * (state / 100));
+                double taxTotal = (taxFederal + taxState);
+                double totalAfter = totalBefore - taxTotal;
+
+                DecimalFormat doubleRounder = new DecimalFormat(".00");
+                String resultInput =
+                        "Employee Name: " + name +
+                        "\nHours Worked: " + doubleRounder.format(hours) + " hours" +
+                        "\nPay Rate: $" + doubleRounder.format(pay) + " an hour" +
+                        "\nGross Pay: $" + doubleRounder.format(totalBefore) +
+                        "\nDeductions: " +
+                        "\n\t\tFederal Withholding (%" + federal + "): $" + doubleRounder.format(taxFederal) +
+                        "\n\t\tState Withholding (%" + state + "): $" + doubleRounder.format(taxState) +
+                        "\n\t\tTotal Deduction: $" + doubleRounder.format(taxTotal) +
+                        "\nNET PAY: $" + doubleRounder.format(totalAfter);
+                result.setText(resultInput);
+            }
+        });
+    }
+}
